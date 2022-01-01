@@ -59,13 +59,13 @@ struct node* init_node(int oper_index, double val)
 
 
 
-void parse(node* root, char* code, int code_len){
+void parse(node* current, char* code, int code_len){
    // printf(":::%d", sizeof(&code)/sizeof(char));
 	
 	//char* *separated_code = (char*)malloc(1 * sizeof(char*));
 	//separated_code[0] = code;
 
-	//char *raw_operatons[5] = (char*){'^', '*', '/', '+', '-'}; //add sin, cos, etc. later
+	char raw_operatons[5] = {'+', '-', '*', '/', '^'}; //add sin, cos, etc. later
 
 	char grouping[2] = {'(', ')'};
 	
@@ -76,32 +76,30 @@ void parse(node* root, char* code, int code_len){
 		
 		if(number_open == 0){ //outside of ()
 			
-            if(code[i] == '*'){
-                root->operation_func_ptr_index = 2;
-                root->left = init_node(NO, (double)(code[i-1] - '0'));
-                root->right = init_node(NO, (double)(code[i+1]- '0'));
+
+            for(int j = 0; j < 5; j++){
+                if(code[i] == raw_operatons[j]){
+                    current->operation_func_ptr_index = j;
+                    current->left = init_node(NO, (double)(code[i-1] - '0'));
+                    current->right = init_node(NO, (double)(code[i+1]- '0'));
+                    current = current->left; //change this to either left or right depending on order of operations
+                }
             }
+
+
 
 		}
 
 	}
 
 	
-
-/*
-	for(int j = 0; j < sizeof(raw_operatons)/sizeof(char); j++){
-		if(code[0] == raw_operations[j]){
-			head = (Node){j, NULL, new};
-		}
-	}
-*/
 	
 }
 
 
 
 int main(){
-	char* input = "5*3";
+	char* input = "5*3+3";
 
 	
 	struct node* solution;
@@ -109,7 +107,7 @@ int main(){
 
 	solution = init_node(0,0);
 
-	parse(solution, input, 3);
+	parse(solution, input, strlen(input));
 
 	solution->value = eval(solution);
 
