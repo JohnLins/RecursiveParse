@@ -35,8 +35,7 @@ void parse(char* code, node* current);
 
 int main(){
 	
-	char* input = "(((2*1)+4)+(5*(2+2)))"; //does not work
-	//char* input = "((2+4)+(5*4))"; //works
+	char* input = "(((2*1)+4)+(5*(2+2)))";
 	struct node* solution;
 	solution = init_node(0,0);
 	parse(input, solution);
