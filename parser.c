@@ -4,6 +4,8 @@
 
 #include <math.h>
 
+#define NO 0
+
 //operation
 double add(double a, double b){return a + b;}
 double sub(double a, double b){return a - b;}
@@ -57,27 +59,28 @@ struct node* init_node(int oper_index, double val)
 
 
 
-void parse(Node* root, char* code){
+void parse(node* root, char* code, int code_len){
+   // printf(":::%d", sizeof(&code)/sizeof(char));
 	
 	//char* *separated_code = (char*)malloc(1 * sizeof(char*));
 	//separated_code[0] = code;
 
-	char *raw_operatons[5] = (char*){'^', '*', '/', '+', '-'}; //add sin, cos, etc. later
+	//char *raw_operatons[5] = (char*){'^', '*', '/', '+', '-'}; //add sin, cos, etc. later
 
-	char grouping[2] = (char){'(', ')'};
+	char grouping[2] = {'(', ')'};
 	
 	int number_open = 0;
-	for(int i = 0; i < sizeof(code)/sizeof(char); i++){
+	for(int i = 0; i < code_len; i++){
 		if(code[i] == grouping[0]){number_open++;}
 		else if(code[i] == grouping[1]){number_open--;}
 		
 		if(number_open == 0){ //outside of ()
 			
-			for(int j = 0; j < 5; j++){
-				if(code[i] == raw_operatons[j]){
-					
-				}
-			}
+            if(code[i] == '*'){
+                root->operation_func_ptr_index = 2;
+                root->left = init_node(NO, (double)(code[i-1] - '0'));
+                root->right = init_node(NO, (double)(code[i+1]- '0'));
+            }
 
 		}
 
@@ -85,37 +88,28 @@ void parse(Node* root, char* code){
 
 	
 
-
+/*
 	for(int j = 0; j < sizeof(raw_operatons)/sizeof(char); j++){
 		if(code[0] == raw_operations[j]){
 			head = (Node){j, NULL, new};
 		}
 	}
-
+*/
 	
 }
 
 
 
 int main(){
-	char* input = "(5*2)+((5+2)-(3*2))+(3)";
-	printf("%s\n",input);
-	printf("test: %lf\n", (*operations[0])(5, 2));
-	printf("test: %lf\n", (*operations[2])(5, 2));
+	char* input = "5*3";
+
 	
-	struct node* solution;//root
-
-	struct node* thing1 =  init_node(0, 5); 
-	struct node* thing2 =  init_node(0, 6);
-
-
+	struct node* solution;
 
 
 	solution = init_node(0,0);
-	solution->left = thing1;
-	solution->right = thing2;
 
-	//parse(&solution, input);
+	parse(solution, input, 3);
 
 	solution->value = eval(solution);
 
